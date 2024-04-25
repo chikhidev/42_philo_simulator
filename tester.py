@@ -51,7 +51,11 @@ def testCase(numOfPhilosophers, timeToDie, timeToEat, timeToSleep, numOfMeals):
     print(BOLDMAGENTA + "Running the philosophers..." + END)
     res = os.popen(cmd).read()
 
-    for line in res.splitlines():
+    step = 1
+
+    lines = res.splitlines()
+
+    for line in lines:
         split = line.split()
         time = int(split[0])
         name = int(split[1])
@@ -73,22 +77,36 @@ def testCase(numOfPhilosophers, timeToDie, timeToEat, timeToSleep, numOfMeals):
         print("current action:\n" + GREEN + line + END)
         print("previous action:\n" + MAGENTA + prev_line + END) if prev_line != None else None
         prev_line = line
+        print("Step " + str(step) + " of " + str(len(lines)))
+        step += 1
         sleep(speed)
-
 
     
 
 if __name__ == '__main__':
     print(BOLDMAGENTA + "Welcome to the philosophers tester!" + END)
 
-    numOfPhilosophers = int(input("Enter the number of philosophers: "))
-    timeToDie = int(input("Enter the time to die: "))
-    timeToEat = int(input("Enter the time to eat: "))
-    timeToSleep = int(input("Enter the time to sleep: "))
-    nm = input("Enter the number of meals or press enter to skip this: ")
+    if (os.path.exists("philo") == False):
+        print(BOLDRED + "Error: philo executable not found!" + END)
+        exit(1)
+    
+    if (os.path.exists("Makefile") == False):
+        print(BOLDRED + "Error: Makefile not found!" + END)
+        exit(1)
 
-    if (nm == "" or int(nm) < 0):
-        numOfMeals = 100
+    prompt = input("Enter the prompt: ")
+    inputs = prompt.split()
+    numOfPhilosophers = int(inputs[0])
+    timeToDie = int(inputs[1])
+    timeToEat = int(inputs[2])
+    timeToSleep = int(inputs[3])
+    try:
+        nm = inputs[4]
+    except:
+        nm = ""
+
+    if (nm == ""):
+        numOfMeals = 50
         print("simulating 50 meals as a limit...")
     else:
         numOfMeals = int(nm)
@@ -100,3 +118,5 @@ if __name__ == '__main__':
         speed = float(speed_input)
 
     testCase(numOfPhilosophers, timeToDie, timeToEat, timeToSleep, numOfMeals)
+
+    print(BOLDGREEN + "Simulation ended!" + END)
